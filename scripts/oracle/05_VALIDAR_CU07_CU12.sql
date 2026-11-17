@@ -1,0 +1,7 @@
+-- Ejecutar después del 04_EXTENSION_CU07_CU12.sql.
+SELECT table_name FROM user_tables
+WHERE table_name IN ('APROBACION_ATS','EJECUCION_SERVICIO','EVIDENCIA_EJECUCION',
+'MATERIAL','MATERIAL_UTILIZADO','INFORME_TECNICO','EVIDENCIA_INFORME_TECNICO',
+'CONFORMIDAD_SERVICIO','MOVIMIENTO_MATERIAL_ALMACEN','MOVIMIENTO_HERRAMIENTA_EQUIPO')
+ORDER BY table_name;
+-- Debe devolver diez filas. La comprobación funcional exige ejecutar casos reales.

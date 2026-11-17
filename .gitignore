@@ -1,0 +1,8 @@
+target/
+.idea/
+*.iml
+*.log
+sigestec-demo.mv.db
+sigestec-demo.trace.db
+sigestec-demo.lock.db
+.env

@@ -1,0 +1,352 @@
+{
+  "info": {
+    "name": "SIGESTEC CU01-CU06 (ADS)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "solicitudId",
+      "value": "1"
+    },
+    {
+      "key": "cotizacionId",
+      "value": "1"
+    },
+    {
+      "key": "ordenCompraId",
+      "value": "1"
+    },
+    {
+      "key": "ordenTrabajoId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Login gerente",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"gerente\",\n  \"password\": \"Cambiar2026!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code >= 200 && pm.response.code < 300) {",
+              "  var r = pm.response.json();",
+              "  pm.collectionVariables.set('token', r.token);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CU01 - Listar solicitudes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/solicitudes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "solicitudes"
+          ]
+        }
+      }
+    },
+    {
+      "name": "CU01 - Registrar solicitud",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/solicitudes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "solicitudes"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clienteId\": 1,\n  \"tipoServicioId\": 1,\n  \"descripcion\": \"Mantenimiento de tablero\",\n  \"observaciones\": \"Visita coordinada\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code >= 200 && pm.response.code < 300) {",
+              "  var r = pm.response.json();",
+              "  pm.collectionVariables.set('solicitudId', r.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CU02 - Registrar cotización con detalle",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cotizaciones",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cotizaciones"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"solicitudId\": \"{{solicitudId}}\",\n  \"observaciones\": \"Alternativa A\",\n  \"detalles\": [\n    {\n      \"descripcion\": \"Inspección\",\n      \"cantidad\": 1,\n      \"precioUnitario\": 150,\n      \"unidadMedida\": \"SERVICIO\"\n    },\n    {\n      \"descripcion\": \"Pruebas\",\n      \"cantidad\": 2,\n      \"precioUnitario\": 60,\n      \"unidadMedida\": \"SERVICIO\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code >= 200 && pm.response.code < 300) {",
+              "  var r = pm.response.json();",
+              "  pm.collectionVariables.set('cotizacionId', r.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CU02 - Aceptar cotización",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cotizaciones/{{cotizacionId}}/estado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cotizaciones",
+            "{{cotizacionId}}",
+            "estado"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"estado\": \"ACEPTADA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "CU03 - Listar OC (POST requiere PDF multipart)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ordenes-compra",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ordenes-compra"
+          ]
+        }
+      }
+    },
+    {
+      "name": "CU04 - Asignar personal (consultar IDs primero)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ordenes-trabajo",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ordenes-trabajo"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"solicitudId\": \"{{solicitudId}}\",\n  \"tecnicoId\": 1,\n  \"ssomaId\": 2,\n  \"apoyoId\": null,\n  \"tecnicosAdicionales\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code >= 200 && pm.response.code < 300) {",
+              "  var r = pm.response.json();",
+              "  pm.collectionVariables.set('ordenTrabajoId', r.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CU05 - Listar OT (programación requiere PDF multipart)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ordenes-trabajo",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ordenes-trabajo"
+          ]
+        }
+      }
+    },
+    {
+      "name": "CU06 - Elaborar análisis de trabajo seguro",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ats",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ats"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ordenTrabajoId\": \"{{ordenTrabajoId}}\",\n  \"condicionesArea\": \"Área segura\",\n  \"peligros\": [\n    \"Riesgo eléctrico\"\n  ],\n  \"epp\": [\n    \"Guantes\"\n  ],\n  \"herramientas\": \"Multímetro\",\n  \"etapas\": [\n    {\n      \"etapa\": \"Inspección\",\n      \"peligro\": \"Tablero energizado\",\n      \"riesgo\": \"Electrocución\",\n      \"nivel\": \"ALTO\",\n      \"medidaControl\": \"Desenergizar\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
